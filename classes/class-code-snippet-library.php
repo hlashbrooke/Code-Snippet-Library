@@ -38,6 +38,8 @@ class Code_Snippet_Library {
 
             add_action( 'edited_code_snippets' , array( &$this , 'save_taxonomy_fields' ) , 10 , 2 );
             add_action( 'created_code_snippets' , array( &$this , 'save_taxonomy_fields' ) , 10 , 2 );
+
+            add_action('send_headers', array( &$this , 'page_redirect' ) );
         } else {
             add_action( 'wp_enqueue_scripts' , array( &$this , 'load_scripts' ) );
         }
@@ -64,16 +66,16 @@ class Code_Snippet_Library {
 
         $args = array(
             'labels' => $labels,
-            'public' => true,
+            'public' => false,
             'publicly_queryable' => true,
             'show_ui' => true,
             'show_in_menu' => true,
-            'query_var' => true,
-            'rewrite' => array( 'slug' => 'snippets' , 'feeds' => true ),
+            'query_var' => false,
+            'rewrite' => false,
             'capability_type' => 'post',
-            'has_archive' => true,
+            'has_archive' => false,
             'hierarchical' => false,
-            'supports' => array( ),
+            'supports' => array( 'title' ),
             'menu_position' => 5,
             'menu_icon' => ''
         );
@@ -395,6 +397,23 @@ class Code_Snippet_Library {
         return $html;
     }
 
+    public function page_redirect() {
+        global $pagenow, $typenow;
+        
+        $do_redirect = false;
+        if( $pagenow == 'edit.php' && $typenow == 'snippet' ) {
+            $do_redirect = true;
+            if( isset( $_GET['page'] ) && $_GET['page'] == 'code_snippet_settings' ) {
+                $do_redirect = false;
+            }
+        }
+
+        if( $do_redirect ) {
+            wp_safe_redirect( admin_url( 'edit-tags.php?taxonomy=code_snippets&post_type=' . $this->token ) );
+            exit;
+        }
+    }
+
     public function load_localisation () {
         load_plugin_textdomain( 'code_snippet', false, dirname( plugin_basename( $this->file ) ) . '/lang/' );
     }
@@ -409,12 +428,3 @@ class Code_Snippet_Library {
     }
 
 }
-
-
-
-
-
-
-
-
-

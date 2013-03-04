@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Code Snippet Library
-Plugin URI: http://www.hughlashbrooke.com
+Plugin URI: http://www.hughlashbrooke.com/plugins
 Description: Store a library of reusable code snippets that you can add to posts.
 Author: Hugh Lashbrooke
 Version: 1.0.0

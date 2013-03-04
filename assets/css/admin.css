@@ -1,3 +1,16 @@
 #menu-posts-snippet ul li:nth-child(2), #menu-posts-snippet ul li:nth-child(3) {
 	display: none;
 }
+#menu-posts-snippet .wp-menu-image {
+  background: none;
+  background-image: url(../images/code_snippet-icon.png);
+  background-position: 7px -132px !important;
+  background-repeat: no-repeat;
+}
+#menu-posts-snippet.wp-menu-open .wp-menu-image,
+#menu-posts-snippet:hover .wp-menu-image {
+  background-position: 7px -164px !important;
+}
+#icon-edit.icon32-posts-snippet, #csl-icon.icon32 {
+  background: transparent url(../images/code_snippet-icon.png) no-repeat left top;
+}

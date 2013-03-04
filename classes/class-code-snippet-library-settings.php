@@ -33,11 +33,11 @@ class Code_Snippet_Library_Settings {
 	public function register_settings() {
 		
 		// Add settings section
-		add_settings_section( 'snippet_main_settings' , __( 'Configure your code snippets' , 'code_snippet' ) , array( &$this , 'main_settings' ) , 'code_snippet_settings' );
+		add_settings_section( 'snippet_theme_settings' , __( 'Modify your code snippet theme' , 'code_snippet' ) , array( &$this , 'main_settings' ) , 'code_snippet_settings' );
 
 		// Add settings fields
-		add_settings_field( 'code_snippet_admin_theme' , __( 'Theme for snippet editor:' , 'code_snippet' ) , array( &$this , 'admin_theme' )  , 'code_snippet_settings' , 'snippet_main_settings' );
-		add_settings_field( 'code_snippet_display_theme' , __( 'Theme for front-end snippet display:' , 'code_snippet' ) , array( &$this , 'display_theme' )  , 'code_snippet_settings' , 'snippet_main_settings' );
+		add_settings_field( 'code_snippet_admin_theme' , __( 'Theme for snippet editor:' , 'code_snippet' ) , array( &$this , 'admin_theme' )  , 'code_snippet_settings' , 'snippet_theme_settings' );
+		add_settings_field( 'code_snippet_display_theme' , __( 'Theme for front-end snippet display:' , 'code_snippet' ) , array( &$this , 'display_theme' )  , 'code_snippet_settings' , 'snippet_theme_settings' );
 
 		// Register settings fields
 		register_setting( 'code_snippet_settings' , 'code_snippet_admin_theme' );
@@ -45,7 +45,7 @@ class Code_Snippet_Library_Settings {
 
 	}
 
-	public function main_settings() { echo '<p>' . __( 'Modify these settings to customise your code snippets.' , 'code_snippet' ) . '</p>'; }
+	public function main_settings() { echo '<p>' . sprintf( __( 'Set the theme (colour scheme) used for your code snippets. See %s for examples of what each theme looks like (use the \'Mode\' drop down).' , 'code_snippet' ), '<a href="http://ace.ajax.org/build/kitchen-sink.html" target="_blank">' . __( 'the ACE demo' , 'code_snippet' ) . '</a>' ) . '</p>'; }
 
 	private function theme_options( $selected = '' ) {
 
