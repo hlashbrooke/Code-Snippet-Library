@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Code Snippet Library v1.0.0\n"
+"Project-Id-Version: Code Snippet Library v1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-03-04 08:47:37+0000\n"
+"PO-Revision-Date: 2013-03-04 09:05:12+0000\n"
 "Last-Translator: Hugh Lashbrooke <hlashbrooke@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -39,11 +39,6 @@ msgstr ""
 #, php-format
 #@ code_snippet
 msgid "Set the theme (colour scheme) used for your code snippets. See %s for examples of what each theme looks like (use the 'Mode' drop down)."
-msgstr ""
-
-#: classes/class-code-snippet-library-settings.php:48
-#@ code_snippet
-msgid "the ACE demo"
 msgstr ""
 
 #: classes/class-code-snippet-library-settings.php:99
@@ -207,5 +202,10 @@ msgstr ""
 #: classes/class-code-snippet-library.php:197
 #@ code_snippet
 msgid "Language"
+msgstr ""
+
+#: classes/class-code-snippet-library-settings.php:48
+#@ code_snippet
+msgid "the Ace demo"
 msgstr ""
 

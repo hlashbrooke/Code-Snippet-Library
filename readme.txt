@@ -1,7 +1,67 @@
 === Code Snippet Library ===
 Contributors: hlashbrooke
 Donate link: http://www.hughlashbrooke.com/donate
-Tags: code, snippet, library, syntax highlighter
+Tags: code, snippet, library, syntax highlighter, ace, github, editor
 Requires at least: 3.0
 Tested up to: 3.5.1
-Stable tag: 1.0.0
+Stable tag: 1.0
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+
+Store a library of reusable code snippets that you can add to any post. Supports 61 programming languages.
+
+== Description ==
+
+"Code Snippet Library" is designed for use on code tutorial sites - it gives you a way to store code snippets that you can use numerous times in any post. You simply create the snippet and paste the relevant shortcode where you want it to appear. The snippets are managed using WordPress' taxonomy UI, so they are quick and easy to add/edit. This means that if you need edit a snippet that appears in multiple posts you only need to edit it in one place and the changes will take effect everywhere it is displayed.
+
+The primary features of Code Snippet Library include:
+* Support for 61 programming languages
+* 29 different code editor themes for the admin and front-end displays
+* Full i18n support
+
+Code Snippet Library uses the Ace code editor to edit and display your snippets (http://ace.ajax.org/) - this is the same editor used by GitHub, Cloud9 and many other services.
+
+The idea for this plugin is based on WordPress Code Snippet by Allan Collins (http://wordpress.org/extend/plugins/wordpress-code-snippet/).
+
+== Usage ==
+
+Simply add your snippet, select its programming lanugage and then paste the supplied shortcode into any post where you want it to appear.
+
+Go to Code Snippets > Settings to modify the themes that your snippets will use - you can select different themes for the admin and front-end displays.
+
+== Installation ==
+
+Installing "Code Snippet Library" can be done either by searching for "Code Snippet Library" via the "Plugins > Add New" screen in your WordPress dashboard, or by using the following steps:
+
+1. Download the plugin via WordPress.org
+1. Upload the ZIP file through the 'Plugins > Add New > Upload' screen in your WordPress dashboard
+1. Activate the plugin through the 'Plugins' menu in WordPress
+1. Customise the plugin from its settings page
+
+== Frequently Asked Questions ==
+
+= Can I customise my snippet display? =
+The 29 themes that are packaged with the Ace editor should cover all your needs, but you can always use the CSS selectors for the code display to modify how it appears.
+
+= How will my snippets appear in feeds? =
+The snippets are displayed inside HTML 'pre' tags, so they will simply be displayed as monospaced text in feeds.
+
+= How will my snippets appear for users who have Javascript disabled? =
+Because the snippets are displayed inside HTML 'pre' tags, so they will simply be displayed as monospaced text if Javascript is not enabled in the user's browser.
+
+== Screenshots ==
+
+1. The plugin settings screen within the WordPress admin.
+2. The info that you need to add to each podcast episode.
+
+== Changelog ==
+
+= 1.0 =
+* 2013-03-05
+* Initial release
+
+== Upgrade Notice ==
+
+= 1.0 =
+* 2013-03-05
+* Initial release

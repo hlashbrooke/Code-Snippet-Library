@@ -45,7 +45,7 @@ class Code_Snippet_Library_Settings {
 
 	}
 
-	public function main_settings() { echo '<p>' . sprintf( __( 'Set the theme (colour scheme) used for your code snippets. See %s for examples of what each theme looks like (use the \'Mode\' drop down).' , 'code_snippet' ), '<a href="http://ace.ajax.org/build/kitchen-sink.html" target="_blank">' . __( 'the ACE demo' , 'code_snippet' ) . '</a>' ) . '</p>'; }
+	public function main_settings() { echo '<p>' . sprintf( __( 'Set the theme (colour scheme) used for your code snippets. See %s for examples of what each theme looks like (use the \'Mode\' drop down).' , 'code_snippet' ), '<a href="http://ace.ajax.org/build/kitchen-sink.html" target="_blank">' . __( 'the Ace demo' , 'code_snippet' ) . '</a>' ) . '</p>'; }
 
 	private function theme_options( $selected = '' ) {
 

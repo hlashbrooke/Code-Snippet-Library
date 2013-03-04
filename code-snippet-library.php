@@ -2,9 +2,9 @@
 /*
 Plugin Name: Code Snippet Library
 Plugin URI: http://www.hughlashbrooke.com/plugins
-Description: Store a library of reusable code snippets that you can add to posts.
+Description: Store a library of reusable code snippets that you can add to any post. Supports 61 programming languages.
 Author: Hugh Lashbrooke
-Version: 1.0.0
+Version: 1.0
 Author URI: http://www.hughlashbrooke.com
 */
 
