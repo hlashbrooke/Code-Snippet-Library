@@ -51,8 +51,13 @@ Because the snippets are displayed inside HTML 'pre' tags, so they will simply b
 
 == Screenshots ==
 
-1. The plugin settings screen within the WordPress admin.
-2. The info that you need to add to each podcast episode.
+1. Snippet management screen using the built-in taxonomy UI.
+2. Snippet edit screen using the built-in taxonomy UI.
+3. Settings screen for the plugin.
+4. Example code display using the 'Chrome' theme.
+5. Example code display using the 'Solarized Light' theme.
+6. Example code display using the 'Solarized Dark' theme.
+7. Example code display using the 'Monakai' theme.
 
 == Changelog ==
 

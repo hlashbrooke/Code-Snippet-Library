@@ -284,7 +284,7 @@ class Code_Snippet_Library {
             if( ! $theme || strlen( $theme ) == 0 || $theme == '' ) {
                 $theme = 'chrome';
             }
-
+            
             $html = "<script type='text/javascript'>
                         var editor = ace.edit( 'code_snippet' );
                         var session = editor.getSession();
