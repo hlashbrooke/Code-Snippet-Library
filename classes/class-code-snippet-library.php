@@ -4,11 +4,12 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 class Code_Snippet_Library {
 
-    protected $dir;
-    protected $file;
-    protected $assets_dir;
-    protected $assets_url;
-    protected $token;
+    private $dir;
+    private $file;
+    private $assets_dir;
+    private $assets_url;
+    private $token;
+    private $snippet;
 
     public function __construct( $file ) {
         $this->dir = dirname( $file );
@@ -16,6 +17,7 @@ class Code_Snippet_Library {
         $this->assets_dir = trailingslashit( $this->dir ) . 'assets';
         $this->assets_url = esc_url( trailingslashit( plugins_url( '/assets/', $file ) ) );
         $this->token = 'snippet';
+        $this->snippet = false;
 
         $this->load_plugin_textdomain();
         add_action( 'init', array( &$this, 'load_localisation' ), 0 );
@@ -23,10 +25,9 @@ class Code_Snippet_Library {
         add_action('init', array( &$this , 'register_post_type' ) );
         add_action('init', array( &$this , 'register_taxonomy' ) );
 
-        if( is_admin() ) {
-            $csl_settings = new Code_Snippet_Library_Settings();
-            add_action('admin_menu', array( &$csl_settings , 'add_menu_pages' ) );
+        add_shortcode( 'snippet' , array( &$this , 'display_snippet' ) );
 
+        if( is_admin() ) {
             add_filter( 'manage_edit-code_snippets_columns' , array( &$this , 'edit_taxonomy_columns' ) );
             add_filter( 'manage_code_snippets_custom_column' , array( &$this , 'add_taxonomy_columns' ) , 1 , 3 );
 
@@ -112,6 +113,7 @@ class Code_Snippet_Library {
         unset( $columns['slug'] );
         unset( $columns['posts'] );
 
+        $columns['snippet_shortcode'] = __( 'Shortcode' , 'code_snippet' );
         $columns['snippet_id'] = __( 'ID' , 'code_snippet' );
         
         return $columns;
@@ -122,6 +124,9 @@ class Code_Snippet_Library {
         $term = get_term( $term_id , 'code_snippets' );
 
         switch ( $column_name ) {
+            case 'snippet_shortcode':
+                $column_data = '[snippet id="' . $term->term_id . '"]';
+            break;
             case 'snippet_id':
                 $column_data = $term->term_id;
             break;
@@ -131,6 +136,12 @@ class Code_Snippet_Library {
     }
 
     public function add_taxonomy_fields( $taxonomy ) {
+
+        $theme = get_option('code_snippet_admin_theme');
+
+        if( ! $theme || strlen( $theme ) == 0 || $theme == '' ) {
+            $theme = 'chrome';
+        }
         
         ?>
         <div class="form-field">
@@ -139,15 +150,16 @@ class Code_Snippet_Library {
         </div>
         <div class="form-field" id="wcs-edit">
             <label for="snippet"><?php _e( 'Snippet', 'code_snippet' ); ?></label>
-            <div id="editor" style="position:relative;width:100%;height:300px;"></div>
+            <pre id="editor" style="display:block;position:relative;width:100%;height:300px;"></pre>
             <textarea id="snippet" name="snippet_data[snippet]" rows="1" cols="1" style="display:none;"></textarea>
             <script type="text/javascript">
                 jQuery( 'input#tag-slug' ).closest( '.form-field' ).remove();
                 jQuery( 'textarea#tag-description' ).closest( '.form-field' ).remove();
 
                 var editor = ace.edit( 'editor' );
-                editor.setTheme( 'ace/theme/solarized_light' );
+                editor.setTheme( 'ace/theme/<?php echo $theme; ?>' );
                 editor.getSession().setMode( 'ace/mode/php' );
+                editor.setShowPrintMargin( false );
 
                 jQuery( 'select#language' ).on( 'change' , function() {
                     editor.getSession().setMode( 'ace/mode/' + this.value );
@@ -172,6 +184,12 @@ class Code_Snippet_Library {
             $lang = 'php';
         }
 
+        $theme = get_option('code_snippet_admin_theme');
+
+        if( ! $theme || strlen( $theme ) == 0 || $theme == '' ) {
+            $theme = 'chrome';
+        }
+
         ?>
         <tr class="form-field">
             <th scope="row" valign="top"><label for="language"><?php _e( 'Language', 'code_snippet' ); ?></label></th>
@@ -180,7 +198,7 @@ class Code_Snippet_Library {
         <tr class="form-field" id="wcs-edit">
             <th scope="row" valign="top"><label for="snippet"><?php _e( 'Snippet', 'code_snippet' ); ?></label></th>
             <td>
-                <div id="editor" style="position:relative;width:100%;height:500px;"><?php echo $this->decode_snippet( $term_meta['snippet'] ); ?></div>
+                <pre id="editor" style="display:block;position:relative;width:100%;height:500px;"><?php echo $this->decode_snippet( $term_meta['snippet'] ); ?></pre>
                 <textarea id="snippet" name="snippet_data[snippet]" rows="1" cols="1" style="display:none;"></textarea>
                 
                 <script type="text/javascript">
@@ -188,16 +206,13 @@ class Code_Snippet_Library {
                     jQuery( 'textarea#description' ).closest( '.form-field' ).remove();
 
                     var editor = ace.edit( 'editor' );
-                    editor.setTheme( 'ace/theme/solarized_light' );
+                    editor.setTheme( 'ace/theme/<?php echo $theme; ?>' );
                     editor.getSession().setMode( 'ace/mode/<?php echo $lang; ?>' );
+                    editor.setShowPrintMargin( false );
 
                     jQuery( 'select#language' ).on( 'change' , function() {
                         editor.getSession().setMode( 'ace/mode/' + this.value );
                     });
-
-                    /* For front-end */
-                    // editor.setReadOnly(true);
-                    // editor.setHighlightActiveLine(false);
 
                     jQuery( '#editor textarea' ).on( 'blur' , function() {
                         jQuery( 'textarea#snippet' ).val( editor.getValue() );
@@ -226,35 +241,71 @@ class Code_Snippet_Library {
         }
     }
 
-    private function get_language_options( $current ) {
+    public function display_snippet( $args ) {
 
-        $languages = array(
-            'php' => 'PHP',
-            'javascript' => 'Javascript'
-        );
+        extract( shortcode_atts( array(
+            'id' => 0
+        ), $args ) );
 
-        $html = '';
-        foreach( $languages as $k => $lang ) {
-            $selected = '';
-            if( $k == $current ) {
-                $selected = " selected='selected'";
-            }
-            $html .= '<option value="' . $k . '"' . $selected . '>' . $lang . '</option>';
-        }
+        $this->snippet = get_option( 'code_snippet_' . $id );
 
+        $html = '<pre id="code_snippet" style="position:relative;width:100%;border:0;padding:0;">' . $this->decode_snippet( $this->snippet['snippet'] ) . '</pre>';
+
+        add_action( 'wp_footer' , array( &$this , 'trigger_ace' ) );
+        
         return $html;
 
     }
 
     public function admin_load_scripts() {
+        $this->load_ace();
+
+        wp_register_style( 'csl_admin' , esc_url( $this->assets_url . 'css/admin.css' ) );
+        wp_enqueue_style( 'csl_admin' );
+    }
+
+    public function load_scripts() {
+        $this->load_ace();
+    }
+
+    private function load_ace() {
         wp_register_script( 'ace' , esc_url( 'http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js' ) );
         wp_enqueue_script( 'ace' );
     }
 
-    public function load_scripts() {
+    public function trigger_ace() {
 
-        wp_register_script( 'ace' , esc_url( 'http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js' ) );
-        wp_enqueue_script( 'ace' );
+        if( $this->snippet ) {
+
+            $theme = get_option('code_snippet_display_theme');
+
+            if( ! $theme || strlen( $theme ) == 0 || $theme == '' ) {
+                $theme = 'chrome';
+            }
+
+            $html = "<script type='text/javascript'>
+                        var editor = ace.edit( 'code_snippet' );
+                        var session = editor.getSession();
+                        
+                        editor.setTheme( 'ace/theme/" . $theme . "' );
+                        session.setMode( 'ace/mode/" . $this->snippet['language'] . "' );
+                        
+                        editor.setReadOnly( true );
+                        editor.setHighlightActiveLine( false );
+                        editor.setShowPrintMargin( false );
+                        editor.setHighlightGutterLine( false );
+                        
+                        var doc = session.getDocument();
+                        var lines = parseInt( doc.getLength() );
+                        var line_height = 20;
+                        var editor_height = lines * line_height;
+                        jQuery( '#code_snippet' ).height( editor_height + 'px' );
+
+                    </script>";
+
+            echo $html;
+        }
+
     }
 
     private function encode_snippet( $snippet = '' ) {
@@ -270,11 +321,78 @@ class Code_Snippet_Library {
     private function decode_snippet( $snippet = '' ) {
 
         if( '' != $snippet ) {
-            $snippet = base64_decode( $snippet );
+            $snippet = htmlspecialchars( base64_decode( $snippet ) );
         }
 
         return $snippet;
 
+    }
+
+    private function get_language_options( $selected = 'php' ) {
+
+        $html = '<option value="abap" ' . selected( 'abap' , $selected , false ) . '>ABAP</option>
+                 <option value="asciidoc" ' . selected( 'asciidoc' , $selected , false ) . '>AsciiDoc</option>
+                 <option value="c9search" ' . selected( 'c9search' , $selected , false ) . '>C9Search</option>
+                 <option value="coffee" ' . selected( 'coffee' , $selected , false ) . '>CoffeeScript</option>
+                 <option value="coldfusion" ' . selected( 'coldfusion' , $selected , false ) . '>ColdFusion</option>
+                 <option value="csharp" ' . selected( 'csharp' , $selected , false ) . '>C#</option>
+                 <option value="css" ' . selected( 'css' , $selected , false ) . '>CSS</option>
+                 <option value="curly" ' . selected( 'curly' , $selected , false ) . '>Curly</option>
+                 <option value="dart" ' . selected( 'dart' , $selected , false ) . '>Dart</option>
+                 <option value="diff" ' . selected( 'diff' , $selected , false ) . '>Diff</option
+                 ><option value="dot" ' . selected( 'dot' , $selected , false ) . '>Dot</option>
+                 <option value="glsl" ' . selected( 'glsl' , $selected , false ) . '>Glsl</option>
+                 <option value="golang" ' . selected( 'golang' , $selected , false ) . '>Go</option>
+                 <option value="groovy" ' . selected( 'groovy' , $selected , false ) . '>Groovy</option>
+                 <option value="haxe" ' . selected( 'haxe' , $selected , false ) . '>haXe</option>
+                 <option value="haml" ' . selected( 'haml' , $selected , false ) . '>HAML</option>
+                 <option value="html" ' . selected( 'html' , $selected , false ) . '>HTML</option>
+                 <option value="c_cpp" ' . selected( 'c_cpp' , $selected , false ) . '>C/C++</option>
+                 <option value="clojure" ' . selected( 'clojure' , $selected , false ) . '>Clojure</option>
+                 <option value="jade" ' . selected( 'jade' , $selected , false ) . '>Jade</option>
+                 <option value="java" ' . selected( 'java' , $selected , false ) . '>Java</option>
+                 <option value="jsp" ' . selected( 'jsp' , $selected , false ) . '>JSP</option>
+                 <option value="javascript" ' . selected( 'javascript' , $selected , false ) . '>JavaScript</option>
+                 <option value="json" ' . selected( 'json' , $selected , false ) . '>JSON</option>
+                 <option value="jsx" ' . selected( 'jsx' , $selected , false ) . '>JSX</option>
+                 <option value="latex" ' . selected( 'latex' , $selected , false ) . '>LaTeX</option>
+                 <option value="less" ' . selected( 'less' , $selected , false ) . '>LESS</option>
+                 <option value="lisp" ' . selected( 'lisp' , $selected , false ) . '>Lisp</option>
+                 <option value="liquid" ' . selected( 'liquid' , $selected , false ) . '>Liquid</option>
+                 <option value="lua" ' . selected( 'lua' , $selected , false ) . '>Lua</option>
+                 <option value="luapage" ' . selected( 'luapage' , $selected , false ) . '>LuaPage</option>
+                 <option value="lucene" ' . selected( 'lucene' , $selected , false ) . '>Lucene</option>
+                 <option value="makefile" ' . selected( 'makefile' , $selected , false ) . '>Makefile</option>
+                 <option value="markdown" ' . selected( 'markdown' , $selected , false ) . '>Markdown</option>
+                 <option value="objectivec" ' . selected( 'objectivec' , $selected , false ) . '>Objective-C</option>
+                 <option value="ocaml" ' . selected( 'ocaml' , $selected , false ) . '>OCaml</option>
+                 <option value="perl" ' . selected( 'perl' , $selected , false ) . '>Perl</option>
+                 <option value="pgsql" ' . selected( 'pgsql' , $selected , false ) . '>pgSQL</option>
+                 <option value="php" ' . selected( 'php' , $selected , false ) . '>PHP</option>
+                 <option value="powershell" ' . selected( 'powershell' , $selected , false ) . '>Powershell</option>
+                 <option value="python" ' . selected( 'python' , $selected , false ) . '>Python</option>
+                 <option value="r" ' . selected( 'r' , $selected , false ) . '>R</option>
+                 <option value="rdoc" ' . selected( 'rdoc' , $selected , false ) . '>RDoc</option>
+                 <option value="rhtml" ' . selected( 'rhtml' , $selected , false ) . '>RHTML</option>
+                 <option value="ruby" ' . selected( 'ruby' , $selected , false ) . '>Ruby</option>
+                 <option value="scad" ' . selected( 'scad' , $selected , false ) . '>OpenSCAD</option>
+                 <option value="scala" ' . selected( 'scala' , $selected , false ) . '>Scala</option>
+                 <option value="scss" ' . selected( 'scss' , $selected , false ) . '>SCSS</option>
+                 <option value="sh" ' . selected( 'sh' , $selected , false ) . '>SH</option>
+                 <option value="sql" ' . selected( 'sql' , $selected , false ) . '>SQL</option>
+                 <option value="stylus" ' . selected( 'stylus' , $selected , false ) . '>Stylus</option>
+                 <option value="svg" ' . selected( 'svg' , $selected , false ) . '>SVG</option>
+                 <option value="tcl" ' . selected( 'tcl' , $selected , false ) . '>Tcl</option>
+                 <option value="tex" ' . selected( 'tex' , $selected , false ) . '>Tex</option>
+                 <option value="text" ' . selected( 'text' , $selected , false ) . '>Text</option>
+                 <option value="textile" ' . selected( 'textile' , $selected , false ) . '>Textile</option>
+                 <option value="typescript" ' . selected( 'typescript' , $selected , false ) . '>Typescript</option>
+                 <option value="vbscript" ' . selected( 'vbscript' , $selected , false ) . '>VBScript</option>
+                 <option value="xml" ' . selected( 'xml' , $selected , false ) . '>XML</option>
+                 <option value="xquery" ' . selected( 'xquery' , $selected , false ) . '>XQuery</option>
+                 <option value="yaml" ' . selected( 'yaml' , $selected , false ) . '>YAML</option>';
+
+        return $html;
     }
 
     public function load_localisation () {

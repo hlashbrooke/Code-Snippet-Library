@@ -2,7 +2,7 @@
 /*
 Plugin Name: Code Snippet Library
 Plugin URI: http://www.hughlashbrooke.com
-Description: Store a library of code snippets that you can add to posts.
+Description: Store a library of reusable code snippets that you can add to posts.
 Author: Hugh Lashbrooke
 Version: 1.0.0
 Author URI: http://www.hughlashbrooke.com
@@ -15,3 +15,4 @@ require_once( 'classes/class-code-snippet-library-settings.php' );
 
 global $csl;
 $csl = new Code_Snippet_Library( __FILE__ );
+$csl_settings = new Code_Snippet_Library_Settings( __FILE__ );
