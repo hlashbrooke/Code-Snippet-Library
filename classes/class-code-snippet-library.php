@@ -25,7 +25,7 @@ class Code_Snippet_Library {
         add_action('init', array( &$this , 'register_post_type' ) );
         add_action('init', array( &$this , 'register_taxonomy' ) );
 
-        add_shortcode( 'snippet' , array( &$this , 'display_snippet' ) );
+        add_shortcode( 'snippet' , array( &$this , 'shortcode' ) );
 
         if( is_admin() ) {
             add_filter( 'manage_edit-code_snippets_columns' , array( &$this , 'edit_taxonomy_columns' ) );
@@ -243,18 +243,53 @@ class Code_Snippet_Library {
         }
     }
 
-    public function display_snippet( $args ) {
+    public function shortcode( $args ) {
 
         extract( shortcode_atts( array(
-            'id' => 0
+            'id' => 0,
+            'execute' => 'no'
         ), $args ) );
+
+        if( $execute && $execute == 'yes' ) {
+            $execute = true;
+        } else {
+            $execute = false;
+        }
+
+        $html = $this->display_snippet( $id , $execute );
+
+        return $html;
+
+    }
+
+    private function display_snippet( $id = 0 , $execute = false ) {
 
         $this->snippet = get_option( 'code_snippet_' . $id );
 
-        $html = '<pre id="code_snippet" style="position:relative;width:100%;border:0;padding:0;">' . $this->decode_snippet( $this->snippet['snippet'] ) . '</pre>';
+        $html = '';
 
-        add_action( 'wp_footer' , array( &$this , 'trigger_ace' ) );
-        
+        if( $this->snippet && is_array( $this->snippet ) ) {
+
+            if( $execute && in_array( $this->snippet['language'] , array( 'php' , 'html' , 'css' , 'javascript' ) ) ) {
+                $executable = $this->decode_snippet( $this->snippet['snippet'] , true );
+                switch( $this->snippet['language'] ) {
+                    case 'php':
+                        ob_start();
+                        eval( $executable );
+                        $html = ob_get_clean();
+                    break;
+                    case 'html': $html = $executable; break;
+                    case 'css': $html = '<style type="text/css">' . $executable . '</style>'; break;
+                    case 'javascript': $html = '<script type="text/javascript">' . $executable . '</script>'; break;
+                }
+            } else {
+                $html = '<pre id="code_snippet" style="position:relative;width:100%;border:0;padding:0;">' . $this->decode_snippet( $this->snippet['snippet'] ) . '</pre>';
+
+                add_action( 'wp_footer' , array( &$this , 'trigger_ace' ) );
+            }
+
+        }
+
         return $html;
 
     }
@@ -320,10 +355,13 @@ class Code_Snippet_Library {
 
     }
 
-    private function decode_snippet( $snippet = '' ) {
+    private function decode_snippet( $snippet = '' , $execute = false ) {
 
         if( '' != $snippet ) {
-            $snippet = htmlspecialchars( base64_decode( $snippet ) );
+            $snippet = base64_decode( $snippet );
+            if( ! $execute ) {
+                $snippet = htmlspecialchars( $snippet );
+            }
         }
 
         return $snippet;
