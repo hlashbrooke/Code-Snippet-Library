@@ -14,13 +14,7 @@ Store a library of reusable code snippets that you can add to any post. Supports
 
 "Code Snippet Library" is designed for use on code tutorial sites - it gives you a way to store code snippets that you can use numerous times in any post. You simply create the snippet and paste the relevant shortcode where you want it to appear. The snippets are managed using WordPress' taxonomy UI, so they are quick and easy to add/edit. This means that if you need edit a snippet that appears in multiple posts you only need to edit it in one place and the changes will take effect everywhere it is displayed.
 
-The primary features of Code Snippet Library include:
-1. Support for 61 programming languages
-1. 29 different code editor themes for the admin and front-end displays
-1. Can handle huge snippets (up to 4 million lines)
-1. Easy copy and paste for users without pop-ups
-1. Graceful fallback when snippets are viewed in feed readers
-1. Full i18n support
+The primary features of Code Snippet Library include: Support for 61 programming languages, 29 different code editor themes for the admin and front-end displays, easy copy and paste for users without pop-ups, graceful fallback when snippets are viewed in feed readers, full i18n support.
 
 Code Snippet Library uses the Ace code editor to edit and display your snippets (http://ace.ajax.org/) - this is the same editor used by GitHub, Cloud9 and many other services.
 
