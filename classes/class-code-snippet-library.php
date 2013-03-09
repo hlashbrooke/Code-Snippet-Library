@@ -227,10 +227,13 @@ class Code_Snippet_Library {
 
     public function save_taxonomy_fields( $term_id ) {
         if ( isset( $_POST['snippet_data'] ) ) {
+
             $snippet_data = get_option( 'code_snippet_' . $term_id );
+            
             $keys = array_keys( $_POST['snippet_data'] );
-                foreach ( $keys as $key ){
-                if ( isset( $_POST['snippet_data'][$key] ) ){
+            
+            foreach ( $keys as $key ){
+                if ( isset( $_POST['snippet_data'][$key] ) ) {
                     if( $key == 'snippet' ) {
                         $snippet_data[$key] = $this->encode_snippet( $_POST['snippet_data'][$key] );
                     } else {
@@ -331,12 +334,28 @@ class Code_Snippet_Library {
                         editor.setHighlightActiveLine( false );
                         editor.setShowPrintMargin( false );
                         editor.setHighlightGutterLine( false );
-                        
+
                         var doc = session.getDocument();
                         var lines = parseInt( doc.getLength() );
                         var line_height = 20;
                         var editor_height = lines * line_height;
                         jQuery( '#code_snippet' ).height( editor_height + 'px' );
+                        
+                        
+                        jQuery( window ).load( function(e) {
+                            var doc = session.getDocument();
+                            var lines = parseInt( doc.getLength() );
+                            var line_height = jQuery( '.ace_line' ).height();
+
+                            var editor_height = lines * line_height;
+                            jQuery( '#code_snippet' ).height( editor_height + 'px' );
+                            jQuery( '.ace_scroller' ).height( editor_height + 'px' );
+                            jQuery( '.ace_gutter' ).height( editor_height + 'px' );
+
+                            var content_height = editor_height + ( line_height * 2 );
+                            jQuery( '.ace_content' ).height( content_height + 'px' );
+                        });
+                        
 
                     </script>";
 

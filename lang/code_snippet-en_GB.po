@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Code Snippet Library v1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-03-04 09:05:12+0000\n"
+"PO-Revision-Date: 2013-03-09 10:53:31+0000\n"
 "Last-Translator: Hugh Lashbrooke <hlashbrooke@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -51,7 +51,7 @@ msgstr ""
 msgid "Theme for the code as it is displayed to users on the front-end."
 msgstr ""
 
-#: classes/class-code-snippet-library-settings.php:126
+#: classes/class-code-snippet-library-settings.php:130
 #@ code_snippet
 msgid "Save Settings"
 msgstr ""
@@ -207,5 +207,11 @@ msgstr ""
 #: classes/class-code-snippet-library-settings.php:48
 #@ code_snippet
 msgid "the Ace demo"
+msgstr ""
+
+#: classes/class-code-snippet-library-settings.php:127
+#, php-format
+#@ default
+msgid "To display your snippet on any post or page, simply copy the supplied shortcode and paste it wherever you want the snippet to appear.%1$sIf you would like to execute the code in the snippet on the page (only works for PHP, HTML, CSS &amp; Javascript) simply add 'execute=\"yes\"' as a paremter to the shortcode."
 msgstr ""
 

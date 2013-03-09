@@ -122,7 +122,11 @@ class Code_Snippet_Library_Settings {
 				settings_fields( 'code_snippet_settings' );
 				do_settings_sections( 'code_snippet_settings' );
 
-			  echo '<p class="submit">
+			  echo '<h3>How to use your snippets</h3>
+			  		<p>
+			  			' . sprintf( __( 'To display your snippet on any post or page, simply copy the supplied shortcode and paste it wherever you want the snippet to appear.%1$sIf you would like to execute the code in the snippet on the page (only works for PHP, HTML, CSS &amp; Javascript) simply add \'execute="yes"\' as a paremter to the shortcode.' ), '<br/>' ) . '
+			  		</p>
+		  			<p class="submit">
 						<input name="Submit" type="submit" class="button-primary" value="' . esc_attr( __( 'Save Settings' , 'code_snippet' ) ) . '" />
 					</p>
 				</form>

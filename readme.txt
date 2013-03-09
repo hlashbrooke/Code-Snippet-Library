@@ -15,9 +15,12 @@ Store a library of reusable code snippets that you can add to any post. Supports
 "Code Snippet Library" is designed for use on code tutorial sites - it gives you a way to store code snippets that you can use numerous times in any post. You simply create the snippet and paste the relevant shortcode where you want it to appear. The snippets are managed using WordPress' taxonomy UI, so they are quick and easy to add/edit. This means that if you need edit a snippet that appears in multiple posts you only need to edit it in one place and the changes will take effect everywhere it is displayed.
 
 The primary features of Code Snippet Library include:
-* Support for 61 programming languages
-* 29 different code editor themes for the admin and front-end displays
-* Full i18n support
+1. Support for 61 programming languages
+1. 29 different code editor themes for the admin and front-end displays
+1. Can handle huge snippets (up to 4 million lines)
+1. Easy copy and paste for users without pop-ups
+1. Graceful fallback when snippets are viewed in feed readers
+1. Full i18n support
 
 Code Snippet Library uses the Ace code editor to edit and display your snippets (http://ace.ajax.org/) - this is the same editor used by GitHub, Cloud9 and many other services.
 
@@ -28,6 +31,8 @@ The idea for this plugin is based on WordPress Code Snippet by Allan Collins (ht
 Simply add your snippet, select its programming lanugage and then paste the supplied shortcode into any post where you want it to appear.
 
 Go to Code Snippets > Settings to modify the themes that your snippets will use - you can select different themes for the admin and front-end displays.
+
+If you would like to execute the code in the snippet on the page (only works for PHP, HTML, CSS & Javascript) simply add 'execute="yes"' as a parameter to the shortcode. Be VERY careful with this as executing PHP script this way is not recommended.
 
 == Installation ==
 
@@ -48,6 +53,9 @@ The snippets are displayed inside HTML 'pre' tags, so they will simply be displa
 
 = How will my snippets appear for users who have Javascript disabled? =
 Because the snippets are displayed inside HTML 'pre' tags, so they will simply be displayed as monospaced text if Javascript is not enabled in the user's browser.
+
+= I have more than one snippet on a page and only the first one is showing corretly - what gives? =
+Currently this plugin only supports one snippet per page, but future versions will enable multiple snippets to be displayed on the same page.
 
 == Screenshots ==
 
