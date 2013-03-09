@@ -70,11 +70,11 @@ Currently this plugin only supports one snippet per page, but future versions wi
 == Changelog ==
 
 = 1.0 =
-* 2013-03-05
+* 2013-03-09
 * Initial release
 
 == Upgrade Notice ==
 
 = 1.0 =
-* 2013-03-05
+* 2013-03-09
 * Initial release
