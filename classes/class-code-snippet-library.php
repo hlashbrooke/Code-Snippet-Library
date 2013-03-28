@@ -14,6 +14,7 @@ class Code_Snippet_Library {
     public function __construct( $file ) {
         $this->dir = dirname( $file );
         $this->file = $file;
+        $this->url = plugins_url( '/', $file );
         $this->assets_dir = trailingslashit( $this->dir ) . 'assets';
         $this->assets_url = esc_url( trailingslashit( plugins_url( '/assets/', $file ) ) );
         $this->token = 'snippet';
@@ -39,7 +40,13 @@ class Code_Snippet_Library {
             add_action( 'edited_code_snippets' , array( &$this , 'save_taxonomy_fields' ) , 10 , 2 );
             add_action( 'created_code_snippets' , array( &$this , 'save_taxonomy_fields' ) , 10 , 2 );
 
-            add_action('send_headers', array( &$this , 'page_redirect' ) );
+            add_action( 'send_headers', array( &$this , 'page_redirect' ) );
+            
+            // add_action( 'admin_menu' , array( &$this, 'load_plugin_url' ) );
+            add_filter( 'mce_buttons' , array( &$this, 'add_editor_button' ) );
+            add_filter( 'mce_external_plugins' , array( &$this, 'add_editor_button_script' ) );
+            add_action( 'wp_ajax_csl_load_shortcode_form' , array( &$this, 'load_editor_button_form' ) );
+
         } else {
             add_action( 'wp_enqueue_scripts' , array( &$this , 'load_scripts' ) );
         }
@@ -266,6 +273,7 @@ class Code_Snippet_Library {
     }
 
     private function display_snippet( $id = 0 , $execute = false ) {
+        global $snippets;
 
         $this->snippet = get_option( 'code_snippet_' . $id );
 
@@ -286,8 +294,12 @@ class Code_Snippet_Library {
                     case 'javascript': $html = '<script type="text/javascript">' . $executable . '</script>'; break;
                 }
             } else {
-                $html = '<pre id="code_snippet" style="position:relative;width:100%;border:0;padding:0;">' . $this->decode_snippet( $this->snippet['snippet'] ) . '</pre>';
+                $html = '<pre id="code_snippet_' . $id . '" style="position:relative;width:100%;border:0;padding:0;">' . $this->decode_snippet( $this->snippet['snippet'] ) . '</pre>';
 
+                $snippets[ $id ]['snippet'] = $this->snippet['snippet'];
+                $snippets[ $id ]['language'] = $this->snippet['language'];
+
+                remove_action( 'wp_footer' , array( &$this , 'trigger_ace' ) );
                 add_action( 'wp_footer' , array( &$this , 'trigger_ace' ) );
             }
 
@@ -302,6 +314,9 @@ class Code_Snippet_Library {
 
         wp_register_style( 'csl_admin' , esc_url( $this->assets_url . 'css/admin.css' ) );
         wp_enqueue_style( 'csl_admin' );
+
+        // Ugly hack for JS use
+        echo '<div id="csl_plugin_dir" style="display:none;">' . $this->url . '</div>';
     }
 
     public function load_scripts() {
@@ -314,50 +329,57 @@ class Code_Snippet_Library {
     }
 
     public function trigger_ace() {
+        global $snippets;
 
-        if( $this->snippet ) {
+        if( $snippets && is_array( $snippets ) ) {
 
             $theme = get_option('code_snippet_display_theme');
 
             if( ! $theme || strlen( $theme ) == 0 || $theme == '' ) {
                 $theme = 'chrome';
             }
+
+            $html = '';
+
+            foreach( $snippets as $instance => $snippet ) {
             
-            $html = "<script type='text/javascript'>
-                        var editor = ace.edit( 'code_snippet' );
-                        var session = editor.getSession();
-                        
-                        editor.setTheme( 'ace/theme/" . $theme . "' );
-                        session.setMode( 'ace/mode/" . $this->snippet['language'] . "' );
-                        
-                        editor.setReadOnly( true );
-                        editor.setHighlightActiveLine( false );
-                        editor.setShowPrintMargin( false );
-                        editor.setHighlightGutterLine( false );
+                $html .= "<script type='text/javascript'>
+                            var editor_" . $instance . " = ace.edit( 'code_snippet_" . $instance . "' );
+                            var session_" . $instance . " = editor_" . $instance . ".getSession();
+                            
+                            editor_" . $instance . ".setTheme( 'ace/theme/" . $theme . "' );
+                            session_" . $instance . ".setMode( 'ace/mode/" . $snippet['language'] . "' );
+                            
+                            editor_" . $instance . ".setReadOnly( true );
+                            editor_" . $instance . ".setHighlightActiveLine( false );
+                            editor_" . $instance . ".setShowPrintMargin( false );
+                            editor_" . $instance . ".setHighlightGutterLine( false );
 
-                        var doc = session.getDocument();
-                        var lines = parseInt( doc.getLength() );
-                        var line_height = 20;
-                        var editor_height = lines * line_height;
-                        jQuery( '#code_snippet' ).height( editor_height + 'px' );
-                        
-                        
-                        jQuery( window ).load( function(e) {
-                            var doc = session.getDocument();
-                            var lines = parseInt( doc.getLength() );
-                            var line_height = jQuery( '.ace_line' ).height();
-
+                            var doc_" . $instance . " = session_" . $instance . ".getDocument();
+                            var lines = parseInt( doc_" . $instance . ".getLength() );
+                            var line_height = 20;
                             var editor_height = lines * line_height;
-                            jQuery( '#code_snippet' ).height( editor_height + 'px' );
-                            jQuery( '.ace_scroller' ).height( editor_height + 'px' );
-                            jQuery( '.ace_gutter' ).height( editor_height + 'px' );
+                            jQuery( '#code_snippet_" . $instance . "' ).height( editor_height + 'px' );
+                            
+                            
+                            jQuery( window ).load( function(e) {
+                                var doc_" . $instance . " = session_" . $instance . ".getDocument();
+                                var lines = parseInt( doc_" . $instance . ".getLength() );
+                                var line_height = jQuery( '#code_snippet_" . $instance . " .ace_line' ).height();
 
-                            var content_height = editor_height + ( line_height * 2 );
-                            jQuery( '.ace_content' ).height( content_height + 'px' );
-                        });
-                        
+                                var editor_height = lines * line_height;
+                                jQuery( '#code_snippet_" . $instance . "' ).height( editor_height + 'px' );
+                                jQuery( '#code_snippet_" . $instance . " .ace_scroller' ).height( editor_height + 'px' );
+                                jQuery( '#code_snippet_" . $instance . " .ace_gutter' ).height( editor_height + 'px' );
 
-                    </script>";
+                                var content_height = editor_height + ( line_height * 2 );
+                                jQuery( '#code_snippet_" . $instance . " .ace_content' ).height( content_height + 'px' );
+                            });
+                            
+
+                        </script>";
+
+            }
 
             echo $html;
         }
@@ -469,6 +491,42 @@ class Code_Snippet_Library {
             wp_safe_redirect( admin_url( 'edit-tags.php?taxonomy=code_snippets&post_type=' . $this->token ) );
             exit;
         }
+    }
+     
+    public function add_editor_button( $buttons ) {
+        array_push( $buttons, '|', 'csl_button' );
+        return $buttons;
+    }
+     
+    public function add_editor_button_script( $plugins ) {
+        $plugins['csl_shortcode'] = $this->assets_url . 'js/admin.js';
+        return $plugins;
+    }
+
+    public function load_editor_button_form() {
+
+        $snippets = get_terms( array( 'code_snippets' ), array( 'orderby' => 'name' , 'hide_empty' => 0 ) );
+
+        $html = '<div id="csl_shortcode-form"><table id="csl_shortcode-table" class="form-table">
+            <tr>
+                <th><label for="csl_shortcode-id">Select your snippet:</label></th>
+                <td><select id="csl_shortcode-id" name="id">';
+
+        foreach( $snippets as $snippet ) {
+            $html .= '<option value="' . $snippet->term_id . '">' . $snippet->name . '</option>';
+        }
+
+        $html .= '</select></td>
+            </tr>
+        </table>
+        <p class="submit">
+            <input type="button" id="csl_shortcode-submit" class="button-primary" value="Insert Snippet" name="submit" />
+        </p>
+        </div>';
+
+        echo $html;
+
+        exit;
     }
 
     public function load_localisation () {

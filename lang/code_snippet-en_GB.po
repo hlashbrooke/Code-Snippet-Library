@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Code Snippet Library v1.0\n"
+"Project-Id-Version: Code Snippet Library v1.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-03-09 10:53:31+0000\n"
+"PO-Revision-Date: 2013-03-28 10:08:20+0000\n"
 "Last-Translator: Hugh Lashbrooke <hlashbrooke@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -56,150 +56,150 @@ msgstr ""
 msgid "Save Settings"
 msgstr ""
 
-#: classes/class-code-snippet-library.php:51
+#: classes/class-code-snippet-library.php:58
 #@ code_snippet
 msgctxt "post type general name"
 msgid "Code Snippets"
 msgstr ""
 
-#: classes/class-code-snippet-library.php:52
+#: classes/class-code-snippet-library.php:59
 #@ code_snippet
 msgctxt "post type singular name"
 msgid "Code Snippet"
 msgstr ""
 
-#: classes/class-code-snippet-library.php:54
+#: classes/class-code-snippet-library.php:61
 #, php-format
 #@ code_snippet
 msgid "Add New %s"
 msgstr ""
 
-#: classes/class-code-snippet-library.php:54
-#: classes/class-code-snippet-library.php:55
-#: classes/class-code-snippet-library.php:56
-#: classes/class-code-snippet-library.php:58
-#: classes/class-code-snippet-library.php:154
-#: classes/class-code-snippet-library.php:201
+#: classes/class-code-snippet-library.php:61
+#: classes/class-code-snippet-library.php:62
+#: classes/class-code-snippet-library.php:63
+#: classes/class-code-snippet-library.php:65
+#: classes/class-code-snippet-library.php:161
+#: classes/class-code-snippet-library.php:208
 #@ code_snippet
 msgid "Snippet"
 msgstr ""
 
-#: classes/class-code-snippet-library.php:55
+#: classes/class-code-snippet-library.php:62
 #, php-format
 #@ code_snippet
 msgid "Edit %s"
 msgstr ""
 
-#: classes/class-code-snippet-library.php:56
+#: classes/class-code-snippet-library.php:63
 #, php-format
 #@ code_snippet
 msgid "New %s"
 msgstr ""
 
-#: classes/class-code-snippet-library.php:57
+#: classes/class-code-snippet-library.php:64
 #, php-format
 #@ code_snippet
 msgid "All %s"
 msgstr ""
 
-#: classes/class-code-snippet-library.php:57
-#: classes/class-code-snippet-library.php:59
-#: classes/class-code-snippet-library.php:60
-#: classes/class-code-snippet-library.php:61
+#: classes/class-code-snippet-library.php:64
+#: classes/class-code-snippet-library.php:66
+#: classes/class-code-snippet-library.php:67
+#: classes/class-code-snippet-library.php:68
 #@ code_snippet
 msgid "Snippets"
 msgstr ""
 
-#: classes/class-code-snippet-library.php:58
+#: classes/class-code-snippet-library.php:65
 #, php-format
 #@ code_snippet
 msgid "View %s"
 msgstr ""
 
-#: classes/class-code-snippet-library.php:59
+#: classes/class-code-snippet-library.php:66
 #, php-format
 #@ code_snippet
 msgid "Search %a"
 msgstr ""
 
-#: classes/class-code-snippet-library.php:60
+#: classes/class-code-snippet-library.php:67
 #, php-format
 #@ code_snippet
 msgid "No %s Found"
 msgstr ""
 
-#: classes/class-code-snippet-library.php:61
+#: classes/class-code-snippet-library.php:68
 #, php-format
 #@ code_snippet
 msgid "No %s Found In Trash"
 msgstr ""
 
-#: classes/class-code-snippet-library.php:63
-#: classes/class-code-snippet-library.php:89
-#: classes/class-code-snippet-library.php:99
+#: classes/class-code-snippet-library.php:70
+#: classes/class-code-snippet-library.php:96
+#: classes/class-code-snippet-library.php:106
 #@ code_snippet
 #@ woocommerce
 #@ default
 msgid "Code Snippets"
 msgstr ""
 
-#: classes/class-code-snippet-library.php:90
+#: classes/class-code-snippet-library.php:97
 #@ woocommerce
 msgid "Code Snippet"
 msgstr ""
 
-#: classes/class-code-snippet-library.php:91
+#: classes/class-code-snippet-library.php:98
 #@ default
 msgid "Search Snippets"
 msgstr ""
 
-#: classes/class-code-snippet-library.php:92
+#: classes/class-code-snippet-library.php:99
 #@ woocommerce
 msgid "All Snippets"
 msgstr ""
 
-#: classes/class-code-snippet-library.php:93
+#: classes/class-code-snippet-library.php:100
 #@ default
 msgid "Parent Snippet"
 msgstr ""
 
-#: classes/class-code-snippet-library.php:94
+#: classes/class-code-snippet-library.php:101
 #@ default
 msgid "Parent Snippet:"
 msgstr ""
 
-#: classes/class-code-snippet-library.php:95
+#: classes/class-code-snippet-library.php:102
 #@ woocommerce
 msgid "Edit Snippet"
 msgstr ""
 
-#: classes/class-code-snippet-library.php:96
+#: classes/class-code-snippet-library.php:103
 #@ default
 msgid "Update Snippet"
 msgstr ""
 
-#: classes/class-code-snippet-library.php:97
+#: classes/class-code-snippet-library.php:104
 #@ default
 msgid "Add New Snippet"
 msgstr ""
 
-#: classes/class-code-snippet-library.php:98
+#: classes/class-code-snippet-library.php:105
 #@ default
 msgid "New Snippet Name"
 msgstr ""
 
-#: classes/class-code-snippet-library.php:118
+#: classes/class-code-snippet-library.php:125
 #@ code_snippet
 msgid "Shortcode"
 msgstr ""
 
-#: classes/class-code-snippet-library.php:119
+#: classes/class-code-snippet-library.php:126
 #@ code_snippet
 msgid "ID"
 msgstr ""
 
-#: classes/class-code-snippet-library.php:150
-#: classes/class-code-snippet-library.php:197
+#: classes/class-code-snippet-library.php:157
+#: classes/class-code-snippet-library.php:204
 #@ code_snippet
 msgid "Language"
 msgstr ""
@@ -212,6 +212,6 @@ msgstr ""
 #: classes/class-code-snippet-library-settings.php:127
 #, php-format
 #@ default
-msgid "To display your snippet on any post or page, simply copy the supplied shortcode and paste it wherever you want the snippet to appear.%1$sIf you would like to execute the code in the snippet on the page (only works for PHP, HTML, CSS &amp; Javascript) simply add 'execute=\"yes\"' as a paremter to the shortcode."
+msgid "To display your snippet on any post or page, simply copy the supplied shortcode and paste it wherever you want the snippet to appear. You can also insert your shortcodes using the toolbar button in the editor.%1$sIf you would like to execute the code in the snippet on the page (only works for PHP, HTML, CSS &amp; Javascript) simply add 'execute=\"yes\"' as a paremter to the shortcode."
 msgstr ""
 
