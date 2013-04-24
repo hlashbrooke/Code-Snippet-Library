@@ -18,6 +18,8 @@ The primary features of Code Snippet Library include: Support for 61 programming
 
 Code Snippet Library uses the Ace code editor to edit and display your snippets (http://ace.ajax.org/) - this is the same editor used by GitHub, Cloud9 and many other services.
 
+You can see the front-end side of the plugin in action on my website. Example: http://www.hughlashbrooke.com/two-methods-for-vertical-centering-in-css/ (displayed using the Monokai theme).
+
 The idea for this plugin is based on WordPress Code Snippet by Allan Collins (http://wordpress.org/extend/plugins/wordpress-code-snippet/).
 
 CONTRIBUTE ON GITHUB: https://github.com/hlashbrooke/Code-Snippet-Library
@@ -41,6 +43,9 @@ Installing "Code Snippet Library" can be done either by searching for "Code Snip
 
 == Frequently Asked Questions ==
 
+= How do I add snippets to my posts/pages? =
+See the usage notes here: http://wordpress.org/extend/plugins/code-snippet-library/other_notes/.
+
 = Can I customise my snippet display? =
 The 29 themes that are packaged with the Ace editor should cover all your needs, but you can always use the CSS selectors for the code display to modify how it appears.
 
@@ -61,7 +66,7 @@ Yes - this is possible in v1.1+.
 4. Example code display using the 'Chrome' theme (default).
 5. Example code display using the 'Solarized Light' theme.
 6. Example code display using the 'Solarized Dark' theme.
-7. Example code display using the 'Monakai' theme.
+7. Example code display using the 'Monokai' theme.
 
 == Changelog ==
 
