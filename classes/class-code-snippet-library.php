@@ -294,7 +294,7 @@ class Code_Snippet_Library {
                     case 'javascript': $html = '<script type="text/javascript">' . $executable . '</script>'; break;
                 }
             } else {
-                $html = '<pre id="code_snippet_' . $id . '" style="position:relative;width:100%;border:0;padding:0;">' . $this->decode_snippet( $this->snippet['snippet'] ) . '</pre>';
+                $html = '<pre id="code_snippet_' . $id . '" style="position:relative;width:auto;border:0;padding:0;">' . $this->decode_snippet( $this->snippet['snippet'] ) . '</pre>';
 
                 $snippets[ $id ]['snippet'] = $this->snippet['snippet'];
                 $snippets[ $id ]['language'] = $this->snippet['language'];
