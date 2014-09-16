@@ -10,6 +10,7 @@ class Code_Snippet_Library {
     private $assets_url;
     private $token;
     private $snippet;
+    private $snippets;
 
     public function __construct( $file ) {
         $this->dir = dirname( $file );
@@ -19,41 +20,43 @@ class Code_Snippet_Library {
         $this->assets_url = esc_url( trailingslashit( plugins_url( '/assets/', $file ) ) );
         $this->token = 'snippet';
         $this->snippet = false;
+        $this->snippets = false;
 
         $this->load_plugin_textdomain();
-        add_action( 'init', array( &$this, 'load_localisation' ), 0 );
+        add_action( 'init', array( $this, 'load_localisation' ), 0 );
 
-        add_action('init', array( &$this , 'register_post_type' ) );
-        add_action('init', array( &$this , 'register_taxonomy' ) );
+        add_action('init', array( $this , 'register_post_type' ) );
+        add_action('init', array( $this , 'register_taxonomy' ) );
 
-        add_shortcode( 'snippet' , array( &$this , 'shortcode' ) );
+        add_shortcode( 'snippet' , array( $this , 'shortcode' ) );
 
         if( is_admin() ) {
-            add_filter( 'manage_edit-code_snippets_columns' , array( &$this , 'edit_taxonomy_columns' ) );
-            add_filter( 'manage_code_snippets_custom_column' , array( &$this , 'add_taxonomy_columns' ) , 1 , 3 );
+            add_filter( 'manage_edit-code_snippets_columns' , array( $this , 'edit_taxonomy_columns' ) );
+            add_filter( 'manage_code_snippets_custom_column' , array( $this , 'add_taxonomy_columns' ) , 1 , 3 );
 
-            add_action( 'admin_enqueue_scripts' , array( &$this , 'admin_load_scripts' ) );
+            add_action( 'admin_enqueue_scripts' , array( $this , 'admin_load_scripts' ) );
 
-            add_action( 'code_snippets_add_form_fields' , array( &$this , 'add_taxonomy_fields' ) , 1 , 1 );
-            add_action( 'code_snippets_edit_form_fields' , array( &$this , 'edit_taxonomy_fields' ) , 1 , 1 );
+            add_action( 'code_snippets_add_form_fields' , array( $this , 'add_taxonomy_fields' ) , 1 , 1 );
+            add_action( 'code_snippets_edit_form_fields' , array( $this , 'edit_taxonomy_fields' ) , 1 , 1 );
 
-            add_action( 'edited_code_snippets' , array( &$this , 'save_taxonomy_fields' ) , 10 , 2 );
-            add_action( 'created_code_snippets' , array( &$this , 'save_taxonomy_fields' ) , 10 , 2 );
+            add_action( 'edited_code_snippets' , array( $this , 'save_taxonomy_fields' ) , 10 , 2 );
+            add_action( 'created_code_snippets' , array( $this , 'save_taxonomy_fields' ) , 10 , 2 );
 
-            add_action( 'send_headers', array( &$this , 'page_redirect' ) );
-            
-            // add_action( 'admin_menu' , array( &$this, 'load_plugin_url' ) );
-            add_filter( 'mce_buttons' , array( &$this, 'add_editor_button' ) );
-            add_filter( 'mce_external_plugins' , array( &$this, 'add_editor_button_script' ) );
-            add_action( 'wp_ajax_csl_load_shortcode_form' , array( &$this, 'load_editor_button_form' ) );
+            add_action( 'send_headers', array( $this , 'page_redirect' ) );
+
+            // add_action( 'admin_menu' , array( $this, 'load_plugin_url' ) );
+            add_filter( 'mce_buttons' , array( $this, 'add_editor_button' ) );
+            add_filter( 'mce_external_plugins' , array( $this, 'add_editor_button_script' ) );
+            add_action( 'wp_ajax_csl_load_shortcode_form' , array( $this, 'load_editor_button_form' ) );
 
         } else {
-            add_action( 'wp_enqueue_scripts' , array( &$this , 'load_scripts' ) );
+            add_action( 'wp_enqueue_scripts' , array( $this , 'load_scripts' ) );
+            add_action( 'wp_print_footer_scripts' , array( $this , 'trigger_ace' ) );
         }
     }
 
     public function register_post_type() {
- 
+
         $labels = array(
             'name' => _x( 'Code Snippets', 'post type general name' , 'code_snippet' ),
             'singular_name' => _x( 'Code Snippet', 'post type singular name' , 'code_snippet' ),
@@ -124,7 +127,7 @@ class Code_Snippet_Library {
 
         $columns['snippet_shortcode'] = __( 'Shortcode' , 'code_snippet' );
         $columns['snippet_id'] = __( 'ID' , 'code_snippet' );
-        
+
         return $columns;
     }
 
@@ -141,7 +144,7 @@ class Code_Snippet_Library {
             break;
         }
 
-        return $column_data; 
+        return $column_data;
     }
 
     public function add_taxonomy_fields( $taxonomy ) {
@@ -151,7 +154,7 @@ class Code_Snippet_Library {
         if( ! $theme || strlen( $theme ) == 0 || $theme == '' ) {
             $theme = 'chrome';
         }
-        
+
         ?>
         <div class="form-field">
             <label for="language"><?php _e( 'Language', 'code_snippet' ); ?></label>
@@ -179,7 +182,7 @@ class Code_Snippet_Library {
                 });
             </script>
         </div>
-        <?php   
+        <?php
     }
 
     public function edit_taxonomy_fields( $term ) {
@@ -209,7 +212,7 @@ class Code_Snippet_Library {
             <td>
                 <pre id="editor" style="display:block;position:relative;width:100%;height:500px;"><?php echo $this->decode_snippet( $term_meta['snippet'] ); ?></pre>
                 <textarea id="snippet" name="snippet_data[snippet]" rows="1" cols="1" style="display:none;"></textarea>
-                
+
                 <script type="text/javascript">
                     jQuery( 'input#slug' ).closest( '.form-field' ).remove();
                     jQuery( 'textarea#description' ).closest( '.form-field' ).remove();
@@ -236,9 +239,9 @@ class Code_Snippet_Library {
         if ( isset( $_POST['snippet_data'] ) ) {
 
             $snippet_data = get_option( 'code_snippet_' . $term_id );
-            
+
             $keys = array_keys( $_POST['snippet_data'] );
-            
+
             foreach ( $keys as $key ){
                 if ( isset( $_POST['snippet_data'][$key] ) ) {
                     if( $key == 'snippet' ) {
@@ -248,7 +251,7 @@ class Code_Snippet_Library {
                     }
                 }
             }
-            
+
             update_option( 'code_snippet_' . $term_id , $snippet_data );
         }
     }
@@ -273,7 +276,6 @@ class Code_Snippet_Library {
     }
 
     private function display_snippet( $id = 0 , $execute = false ) {
-        global $snippets;
 
         $this->snippet = get_option( 'code_snippet_' . $id );
 
@@ -296,11 +298,8 @@ class Code_Snippet_Library {
             } else {
                 $html = '<pre id="code_snippet_' . $id . '" style="position:relative;width:100%;border:0;padding:0;">' . $this->decode_snippet( $this->snippet['snippet'] ) . '</pre>';
 
-                $snippets[ $id ]['snippet'] = $this->snippet['snippet'];
-                $snippets[ $id ]['language'] = $this->snippet['language'];
-
-                remove_action( 'wp_footer' , array( &$this , 'trigger_ace' ) );
-                add_action( 'wp_footer' , array( &$this , 'trigger_ace' ) );
+                $this->snippets[ $id ]['snippet'] = $this->snippet['snippet'];
+                $this->snippets[ $id ]['language'] = $this->snippet['language'];
             }
 
         }
@@ -329,9 +328,8 @@ class Code_Snippet_Library {
     }
 
     public function trigger_ace() {
-        global $snippets;
 
-        if( $snippets && is_array( $snippets ) ) {
+        if( $this->snippets && is_array( $this->snippets ) ) {
 
             $theme = get_option('code_snippet_display_theme');
 
@@ -341,15 +339,15 @@ class Code_Snippet_Library {
 
             $html = '';
 
-            foreach( $snippets as $instance => $snippet ) {
-            
+            foreach( $this->snippets as $instance => $snippet ) {
+
                 $html .= "<script type='text/javascript'>
                             var editor_" . $instance . " = ace.edit( 'code_snippet_" . $instance . "' );
                             var session_" . $instance . " = editor_" . $instance . ".getSession();
-                            
+
                             editor_" . $instance . ".setTheme( 'ace/theme/" . $theme . "' );
                             session_" . $instance . ".setMode( 'ace/mode/" . $snippet['language'] . "' );
-                            
+
                             editor_" . $instance . ".setReadOnly( true );
                             editor_" . $instance . ".setHighlightActiveLine( false );
                             editor_" . $instance . ".setShowPrintMargin( false );
@@ -360,8 +358,8 @@ class Code_Snippet_Library {
                             var line_height = 20;
                             var editor_height = lines * line_height;
                             jQuery( '#code_snippet_" . $instance . "' ).height( editor_height + 'px' );
-                            
-                            
+
+
                             jQuery( window ).load( function(e) {
                                 var doc_" . $instance . " = session_" . $instance . ".getDocument();
                                 var lines = parseInt( doc_" . $instance . ".getLength() );
@@ -375,7 +373,7 @@ class Code_Snippet_Library {
                                 var content_height = editor_height + ( line_height * 2 );
                                 jQuery( '#code_snippet_" . $instance . " .ace_content' ).height( content_height + 'px' );
                             });
-                            
+
 
                         </script>";
 
@@ -478,7 +476,7 @@ class Code_Snippet_Library {
 
     public function page_redirect() {
         global $pagenow, $typenow;
-        
+
         $do_redirect = false;
         if( $pagenow == 'edit.php' && $typenow == 'snippet' ) {
             $do_redirect = true;
@@ -492,12 +490,12 @@ class Code_Snippet_Library {
             exit;
         }
     }
-     
+
     public function add_editor_button( $buttons ) {
         array_push( $buttons, '|', 'csl_button' );
         return $buttons;
     }
-     
+
     public function add_editor_button_script( $plugins ) {
         $plugins['csl_shortcode'] = $this->assets_url . 'js/admin.js';
         return $plugins;
@@ -535,9 +533,9 @@ class Code_Snippet_Library {
 
     public function load_plugin_textdomain () {
         $domain = 'code_snippet';
-        
+
         $locale = apply_filters( 'plugin_locale', get_locale(), $domain );
-     
+
         load_textdomain( $domain, WP_LANG_DIR . '/' . $domain . '/' . $domain . '-' . $locale . '.mo' );
         load_plugin_textdomain( $domain, FALSE, dirname( plugin_basename( $this->file ) ) . '/lang/' );
     }
