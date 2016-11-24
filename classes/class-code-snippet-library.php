@@ -418,8 +418,8 @@ class Code_Snippet_Library {
                  <option value="css" ' . selected( 'css' , $selected , false ) . '>CSS</option>
                  <option value="curly" ' . selected( 'curly' , $selected , false ) . '>Curly</option>
                  <option value="dart" ' . selected( 'dart' , $selected , false ) . '>Dart</option>
-                 <option value="diff" ' . selected( 'diff' , $selected , false ) . '>Diff</option
-                 ><option value="dot" ' . selected( 'dot' , $selected , false ) . '>Dot</option>
+                 <option value="diff" ' . selected( 'diff' , $selected , false ) . '>Diff</option>
+                 <option value="dot" ' . selected( 'dot' , $selected , false ) . '>Dot</option>
                  <option value="glsl" ' . selected( 'glsl' , $selected , false ) . '>Glsl</option>
                  <option value="golang" ' . selected( 'golang' , $selected , false ) . '>Go</option>
                  <option value="groovy" ' . selected( 'groovy' , $selected , false ) . '>Groovy</option>
