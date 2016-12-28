@@ -323,7 +323,7 @@ class Code_Snippet_Library {
     }
 
     private function load_ace() {
-        wp_register_script( 'ace' , esc_url( 'http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js' ) );
+        wp_register_script( 'ace' , esc_url( 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ace.js' ) );
         wp_enqueue_script( 'ace' );
     }
 
